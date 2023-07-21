@@ -1,0 +1,236 @@
+---
+title: "Ciencia de Datos"
+subtitle: "Universidad Pontificia Bolivariana"
+author: "Ader Villar"
+author-title: Profesor
+format: 
+  html:
+    html-math-method: webtex
+page-layout: article
+css: style.css
+embed-resources: true
+mermaid:
+  theme: default
+# mermaid-format: png
+toc: true
+toc-depth: 2
+toc-location: left
+lang: es
+bibliography: references.bib
+csl: apa.csl
+nocite: "@*"
+---
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(kableExtra)
+library(tidyverse)
+library(gt)
+library(DiagrammeR)
+```
+
+
+## Presentación del curso
+
+El curso de ciencia de datos presenta una introducción a la teoría e implementación de métodos estadísticos para el análisis de datos. Se hace énfasis en los modelos predictivos que buscan aproximar una variable de interés $Y$ (métodos supervisados) en términos de un conjunto de variables predictoras $(\textbf{X})$, usando una función **f** que debe ser _aprendida_ a través de un conjunto de datos $(x_i, y_i)\ i=1,2,...,n$. 
+
+:::{.div-float}
+![Habilidades necesarias para ciencia de datos](ds-plot.svg){#fig-ds-plot}
+:::
+
+
+<!-- :::{.div-float} -->
+<!-- ![Cielo nocturno](fig1.jpg) -->
+<!-- ::: -->
+
+Se estudian las bases conceptuales y matemáticas de los modelos y se evalúan a partir de sus propiedades estadísticas y capacidad de predecir la variable $Y$. Se estudia también la parte práctica de los temas mediante la aplicación y validación de los métodos en bases de datos sintéticas y reales, usando el lenguaje `R` como software estadístico y de programación.
+
+La ciencia de datos requiere de disciplinas y habilidades diversas, pero puede resumirse en 3 grandes aspectos ([@fig-ds-plot]):
+
++ Conocimiento en estadística y modelos matemáticos
++ Manejo de algoritmos y lenguajes de programación
++ _Experticia_ en algún campo específico de aplicación
+
+El objetivo principal de este curso es desarrollar de manera formal, pero sin exceso en la teoría matemática, los modelos estadísticos en ciencia de datos. Las habilidades de programación y conocimientos básicos en los campos de aplicación se desarrollarán en la medida de lo necesario. 
+
+Resolver problemas de ciencia de datos no es un proceso lineal, pero sí se puede enmarcar en una serie de etapas que ayudan a desarrollar de manera consistente el trabajo o flujo de trabajo.
+
+En la @fig-workflow se muestra un esquema de este proceso sistemático. La primera etapa se conoce como **disputa de datos** (_data wrangling_)^[Algunos autores lo definen como una _pelea_ con los datos] y consiste en la obtención y _puesta a punto_ de los datos que se van a utilizar. Esta fase requiere **importar**, **ordenar** y **transformar** los datos, y necesita habilidades específicas en manejo de bases de datos. Las personas con alta especialización en esta área se conocen somo Ingenieros de Datos (_Data Engineers_).
+
+:::{#fig-workflow}
+```{mermaid}
+flowchart LR
+subgraph DW[Data Wrangling]
+  direction LR
+  A(Importar) --> B(Ordenar)
+  B --> C(Transformar)
+end
+subgraph EDA["Exploratory Data Analysis (EDA)"]
+  direction RL
+  C2(Transformar) --> D(Visualizar)
+  D --> C2
+end
+subgraph MO[Modeling]
+  direction RL
+  E(Modelar) --> F(Evaluar)
+  F --> E
+end
+subgraph CO[Communicate]
+  G(comunicar)
+end
+
+DW --> EDA
+EDA --> MO
+MO --> EDA
+MO --> CO
+```
+
+Flujo de trabajo en ciencia de datos
+:::
+
+La segunda fase es el **análisis exploratorio de datos** (_Exploratory Data Analysis (EDA)_) y consiste principalmente en la visualización a través de tablas, resúmenes y gráficas de la información que se tiene en las bases de datos que han sido previamente organizadas. Esta fase puede requerir iterar entre los procesos de transformación y visualización. No todos los problemas de ciencia de datos requieren de técnicas de _machine learning_ y muchos de estos problemas pueden resolverse en esta fase. Las personas que se especializan en esta área se conocen como Analistas de Datos (_Data Analysts_).
+
+La tercera fase (y la que más desarrollaremos en este curso) es la **Modelación** y se trata de aplicar modelos estadísticos y de _machine learning_ para obtener ideas e información a partir de los datos. Este proceso también es iterativo y puede requerir aplicar varios tipos de modelos, evaluarlos y compararlos para obtener buenos resultados. Los especialistas en esta área son los Científicos de Datos (_Data Scientists_).
+
+La última fase del proceso es la **comunicación** de los resultados y hallazgos. Es importante aprender a presentar los resultados y veremos algunas herramientas básicas para lograrlo.
+
+
+## Recursos bibliógraficos
+
+Hay muchos (muchísimos) recursos disponibles para apoyar este curso. Es fundamental usar lenguajes de programación y en este caso usaremos `R`, cualquier curso _online_, libro o tutorial puede servir para aprender los conceptos básicos, el estudiante es libre de escoger y aprender (si aún no sabe) `R` de una fuente de su preferencia. 
+
+El libro principal para los conceptos estadísticos será @james2021, ya que maneja un buen balance entre aplicaciones y teoría para el bagaje matemático que se espera de los estudiantes. Este libro también trae código y aplicaciones en `R`, pero hay mejores fuentes en este aspecto.
+
+Otros 2 libros interesantes para la parte conceptual y teórica son [@irizarry; @huang_data], un poco menos desarrollados en lo conceptual con respecto a [@james2021] pero a cambio traen más y mejor código para aplicaciones usando `R`.
+
+El libro de [@wickham] es excelente para aprender a hacer ciencia de datos en `R`, sobre todo en la parte de análisis exploratorio de datos, tiene muchos ejemplos y código muy bien escrito. Su desventaja^[Desventaja en el sentido de que el libro no está pensado para hacer modelación por lo que tendremos que usar otras fuentes para esta parte] es la falta de modelos estadísticos. 
+
+Un libro que requiere algo más de madurez matemática que [@james2021] es [@hastie2009], aunque no se usará como referencia principal, es útil para profundizar en algunos temas importantes. De igual manera, se pueden consultar las notas disponibles en línea de 2 cursos de estadística no paramétrica [@garcia_notes] y modelos predictivos [@garcia_notes1].
+
+Los libros [@alexander2023; @healy2018; @kabacoff] son excelentes referencias para profundizar en aspectos de visualización de datos usando `R`. También se pueden encontrar toda una serie de recursos valiosos en la web, como [@emaasit; @healy; @holtz].
+
+Los libros [@james2021; @hastie2009] pueden obtenerse de las bases de datos de la universidad. Los libros [@irizarry; @huang_data; @wickham; @garcia_notes; @garcia_notes1; @alexander2023; @healy2018; @kabacoff] están disponibles en la web y son de libre acceso.
+
+
+
+## Saberes previos
+
+Para un óptimo desarrollo de los contenidos del curso, se espera que los estudiantes tengan habilidades básicas en programación algorítmica con cualquier lenguaje. Se usará `R` pero la experiencia en cualquier otro lenguaje es suficiente para aprender rápidamente las herramientas necesarias.
+
+De igual forma es necesario el manejo de conceptos matemáticos de funciones, derivadas y optimización en una y varias variables tal como se ve en los cursos de __cálculo__; conceptos de variables aleatorias, estimadores, intervalos de confianza, pruebas de hipótesis y regresión lineal de los cursos de **Probabilidad y Estadística** y **Modelos de Regresión y Series de Tiempo**. Es recomendable que el estudiante se sienta cómodo en la manipulación de matrices y sistemas de ecuaciones lineales como se ve en el curso de **Álbegra Lineal**.
+
+
+
+## Objetivos
+
++ Comprender la teoría y los conceptos en los que se fundamentan los métodos estudiados
+
++ Identificar problemas en los que se puedan aplicar de forma adecuada modelos predictivos de ciencia de datos
+
++ Adquirir pericia en las diferentes fases de la ciencia de datos: importación, organización, transformación, visualización, modelación y comunicación
+
++ Aplicar en problemas reales los conceptos aprendidos, mediante el uso de lenguajes de programación y bases de datos
+
++ Analizar y comunicar de manera clara los resultados de la aplicación de modelos estadísticos en bases de datos
+
+
+## Metodología
+
+El contenido del curso será presentado en sesiones presenciales los días martes a las 8:00 am y miércoles a las 4:00 pm. Durante las clases se irán desarrollando de manera simultánea conceptos y código en `R`, por lo que es necesario estar en salas de informática. 
+
+El estudiante es responsable de trabajar semanalmente en el curso para afianzar los temas dados. se realizarán exámenes cortos^[No es necesario que estas evaluaciones rápidas o quices sean programadas o avisadas con anticipación, pueden realizarse en cualquier clase y en cualquier momento de la clase. Si $p_k$ es la probabilidad de haya quiz en la k-ésima clase, entonces $p_k>0 \ \forall k$] periódicamente para evaluar la evolución de cada estudiante en la asimilación de los temas. Se dejarán talleres/tareas para estimular la investigación y profundización de los temas vistos durante las clases.
+
+
+## Plan de trabajo por semana
+
+```{r, echo=F}
+library(kableExtra)
+session <- 1:16
+start_date <- as.Date("17/07/2023", format = "%d/%m/%Y")
+dates <- seq.Date(from = start_date, length.out = length(session), 
+                  by = "week")
+dates <- format(dates, "%B %d")
+subject <- c(
+  "Introducción al curso. Fundamentos de <code>R</code> para el análisis
+  de datos",
+  "Análisis exploratorio, parte I",
+  "Análisis exploratorio, parte II",
+  "Función de pérdida. Medidas de la calidad de un modelo. Sesgo y varianza",
+  "Regresión lineal. Parte I. <b>Examen 1</b>",
+  "Regresión lineal. Parte II",
+  "Modelos lineales de clasificación. Análisis discriminante lineal",
+  "Regresión logística",
+  "Validación cruzada (CV)",
+  "Métodos de regularización. Ridge y Lasso. <b>Examen 2</b>",
+  "Reducción de la dimensión. Componentes principales",
+  "Modelos no lineales de regresión. Regresión polinómica y en bases funcionales",
+  "Splines, Smoothing splines",
+  "Métodos basados en árboles. Parte I <b>Examen 3</b>",
+  "Métodos basados en árboles. Parte II",
+  "Breve introducción a temas adicionales: Máquinas de Soporte Vectorial, 
+  Redes Neuronales"
+)
+
+content <- data.frame(session, dates, subject)
+colnames(content) <- c("Semana", "Inicio", "Temas")
+content %>% kbl(escape = F) %>% 
+  kable_styling(c("hover", "bordered", "striped", "condensed"))
+
+```
+
+<!-- ## Qué no se verá en este curso -->
+
+<!-- + Algoritmos de _machine learning_ -->
+<!-- + Máquinas de soporte vectorial -->
+<!-- + Redes neuronales -->
+<!-- + _Deep Learning_ -->
+<!-- + _Big Data_ -->
+<!-- +  -->
+
+## Evaluación
+
+La nota final se calculará como el promedio de 4 cortes de igual ponderación (25%). Cada corte tendrá los siguientes componentes:
+
+:::{#eval}
+```{r}
+#| echo: false
+cortes <- c('Primer corte <b>(25%)</b>', 'Segundo corte <b>(25%)</b>',
+            'Tercer corte <b>(25%)</b>', 'Cuarto corte <b>(25%)</b>')
+notas <- c('Evaluaciones de Seguimiento, quices, talleres, exposiciones, trabajos <b>(12%)</b><br> 
+           Asistencia (puntualidad), Participación en clase <b>(2%)</b><br>
+           Evaluación parcial <b>(11%)</b>',
+           'Evaluaciones de Seguimiento, quices, talleres, exposiciones, trabajos <b>(12%)</b><br> 
+           Asistencia (puntualidad), Participación en clase <b>(2%)</b><br>
+           Evaluación parcial <b>(11%)</b>',
+           'Evaluaciones de Seguimiento, quices, talleres, exposiciones, trabajos <b>(12%)</b><br> 
+           Asistencia (puntualidad), Participación en clase <b>(2%)</b><br>
+           Evaluación parcial <b>(11%)</b>',
+           'Evaluaciones de Seguimiento, quices, talleres, exposiciones, trabajos <b>(10%)</b><br> 
+           Evaluación o proyecto final <b>(15%)</b>')
+dt <- tibble::tibble(Cortes = cortes, Componentes = notas)
+dt %>% kbl(escape = FALSE) %>% kable_styling(
+  bootstrap_options = c("hover", "estriped", "bordered", "condensed"),
+  full_width = T) %>% 
+  column_spec(1, border_right = F, extra_css = 'vertical-align:middle;')
+```
+:::
+
+
+
+## Sobre el [Reglamento](https://gconocimiento.upb.edu.co/gesdoc/Informacin%20Institucional/Reglamento%20Estudiantes%20Pregrado.pdf){target="_blank"}
+
++ <abbr title="Artículo 41">Es necesario que el estudiante participe como mínimo en el 80% del desarrollo del curso (clases). La inasistencia será causal de pérdida del curso con una calificación de cero punto cero cero (0.00), sin posibilidad de cancelación del curso, si la inasistencia fue reportada previamente al sistema de información.</abbr>
++ <abbr title="Artículo 41">La inasistencia por razones de enfermedad o fuerza mayor deberá justificarse
+dentro de los tres (3) días hábiles siguientes al hecho. Cuando el estudiante
+requiera ausentarse para eventos académicos, científicos, culturales y
+deportivos, en representación de la Universidad, deberá reportar este hecho al
+profesor, como mínimo con ocho (8) días hábiles de anticipación.</abbr>
++ <abbr title="Artículo 34, literal a">En cualquiera de las clases se pueden hacer actividades evaluativas de seguimiento (quices, talleres cortos, ejercicios en clase), con o sin programación previa</abbr>.
++ <abbr title="Artículo 35, literal e">La no presentación de una evaluación en la fecha y hora fijada por el profesor conlleva una nota de 0.00 (cero punto cero cero).</abbr>
++ <abbr title="Artículo 35, parágrafo">Cuando, por causas justificadas, no se puedan presentar las evaluaciones parciales o finales en las fechas establecidas por el docente, se podrán solicitar pruebas supletorias ante el director de la Facultad. Estas pruebas tendrán un costo y deberán ser solicitadas dentro de los tres (3) días hábiles siguientes a la programación de la prueba no presentada por el estudiante y, si es autorizada, deberá ser presentada dentro de los 10 días hábiles siguientes a su autorización.</abbr> 
++ <abbr title="Artículo 34, parágrafo 2">Los resultados de las evaluaciones deberán ser informados al estudiante, a más
+tardar, dentro de las dos (2) semanas siguientes a su presentación.</abbr>
+
+
